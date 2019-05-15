@@ -1,0 +1,24 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -t diceprime/react-test -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run diceprime/react-test npm test -- --coverage
+
+after_success:
+  - docker build -t diceprime/fib-client  ./client
+  - docker build -t diceprime/fib-ngxin ./nginx
+  - docker build -t diceprime/fib-server ./server
+  - docker build -t diceprime/fib-worker ./worker
+
+  # Log in to docker cli
+
+  - echo  "$DOCKER_PASSWORD" |  docker login -u "$DOCKER_ID" --password-stdin
+
+  - docker push diceprime/fib-client
+  - docker push diceprime/fib-ngxin
+  - docker push diceprime/fib-server
+  - docker push diceprime/fib-worker
