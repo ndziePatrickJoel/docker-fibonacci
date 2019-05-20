@@ -10,7 +10,7 @@ script:
 
 after_success:
   - docker build -t diceprime/fib-client  ./client
-  - docker build -t diceprime/fib-ngxin ./nginx
+  - docker build -t diceprime/fib-nginx ./nginx
   - docker build -t diceprime/fib-server ./server
   - docker build -t diceprime/fib-worker ./worker
 
@@ -19,6 +19,22 @@ after_success:
   - echo  "$DOCKER_PASSWORD" |  docker login -u "$DOCKER_ID" --password-stdin
 
   - docker push diceprime/fib-client
-  - docker push diceprime/fib-ngxin
+  - docker push diceprime/fib-nginx
   - docker push diceprime/fib-server
   - docker push diceprime/fib-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-2
+  app: fibmulti 
+  env: Fibmulti-env
+  bucket_name: elasticbeanstalk-us-west-2-669300825076
+  bucket_path: fibmulti
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: 
+    secret: $AWS_SECRET_KEY
+
+
+ 

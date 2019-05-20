@@ -1,0 +1,37 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "client",
+            "image": "diceprime/fib-client",
+            "hostnme": "client",
+            "essential": false
+        },
+        {
+            "name": "server",
+            "image": "diceprime/fib-server",
+            "hostnme": "api",
+            "essential": false
+        },
+        {
+            "name": "worker",
+            "image": "diceprime/fib-worker",
+            "hostnme": "worker",
+            "essential": false
+        },
+        {
+            "name": "nginx",
+            "image": "diceprime/fib-nginx",
+            "essential": true,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                }
+            ],
+            "links": [
+                "client", "server"
+            ]
+        }
+    ]
+}
